@@ -45,7 +45,7 @@ PACKAGE_SOC_VALUE="all"
 
 # Set the default packaged kernel download repository
 KERNEL_REPO_URL_VALUE="breakings/OpenWrt"
-# Set kernel tag: kernel_stable, kernel_rk3588
+# Set kernel tag: kernel_stable, kernel_rk3588, (kernel_flippy)
 KERNEL_TAGS=("stable" "rk3588")
 STABLE_KERNEL=("6.1.1" "5.15.1")
 RK3588_KERNEL=("5.10.110")
@@ -174,7 +174,7 @@ init_var() {
             if [[ " ${PACKAGE_OPENWRT_RK3588[@]} " =~ " ${kt} " ]]; then
                 KERNEL_TAGS_TMP+=("rk3588")
             else
-                KERNEL_TAGS_TMP+=("stable")
+                KERNEL_TAGS_TMP+=("flippy")
             fi
         done
         # Remove duplicate kernel tags
@@ -185,7 +185,7 @@ init_var() {
     echo -e "${INFO} Kernel tags: [ $(echo ${KERNEL_TAGS[@]} | xargs) ]"
 
     # Reset STABLE_KERNEL options
-    [[ -n "${KERNEL_VERSION_NAME}" && " ${KERNEL_TAGS[@]} " =~ " stable " ]] && {
+    [[ -n "${KERNEL_VERSION_NAME}" && " ${KERNEL_TAGS[@]} " =~ " flippy " ]] && {
         unset STABLE_KERNEL
         oldIFS="${IFS}"
         IFS="_"

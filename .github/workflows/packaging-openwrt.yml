@@ -19,13 +19,14 @@ on:
           - all
           - s922x_s905x3_s905x2_s912_s905d_s905
           - rock5b_h88k_ak88
-          - h66k_h68k_r66s_r68s_e25_photonicat
+          - h66k_h68k_h69k_r66s_r68s_e25
           - beikeyun_l1pro
           - rock5b
           - h88k
           - ak88
           - h66k
           - h68k
+          - h69k
           - r66s
           - r68s
           - e25
@@ -75,13 +76,21 @@ on:
         required: false
         default: ""
       openwrt_storage:
-        description: "Select OpenWrt image storage time."
+        description: "Select image storage type."
         required: false
-        default: "lts"
+        default: "save"
         type: choice
         options:
-          - lts
-          - tmp
+          - save
+          - temp
+      builder_name:
+        description: "Set OpenWrt builder signature."
+        required: false
+        default: "angel"
+        type: choice
+        options:
+          - angel
+          - yourname
 
 env:
   TZ: America/New_York
@@ -126,7 +135,7 @@ jobs:
           latest_version="$(curl -s \
                               -H "Accept: application/vnd.github+json" \
                               -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
-                              https://api.github.com/repos/${armvirt_tarfile_repo}/releases |
+                              https://api.github.com/repos/${armvirt_tarfile_repo}/releases?per_page=100 |
                               jq '.[]' |
                               jq -s --arg RTK "${releases_tag_keywords}" '.[] | select(.tag_name | contains($RTK))' |
                               jq -s '.[].assets[] | {data:.updated_at, url:.browser_download_url}' |
@@ -155,6 +164,7 @@ jobs:
           KERNEL_VERSION_NAME: ${{ inputs.openwrt_kernel }}
           KERNEL_AUTO_LATEST: ${{ inputs.auto_kernel }}
           SCRIPT_DIY_PATH: ${{ inputs.script_diy_path }}
+          WHOAMI: ${{ inputs.builder_name }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload OpenWrt Firmware to Release
